@@ -1,0 +1,4 @@
+{
+  "name": "advzpmemonitor",
+  "buildCommand": "npx prisma generate && npm run build"
+}

@@ -1,69 +1,28 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link';
 
-export default function Home() {
+export default function Login() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex items-center justify-center" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f4f7f6, #e3e8ee)' }}>
+      <div className="card glass" style={{ width: '100%', maxWidth: '400px', padding: '2.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h1 className="text-xl font-bold" style={{ color: 'var(--accent-primary)', marginBottom: '0.5rem' }}>ADVZPMEMonitor</h1>
+          <p className="text-secondary text-sm">Acesse a sua conta para gerir subprojectos</p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        
+        <form className="flex flex-col gap-4">
+          <div>
+            <label className="text-sm font-semibold" style={{ display: 'block', marginBottom: '0.25rem' }}>E-mail</label>
+            <input type="email" className="input" placeholder="seu.email@exemplo.com" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold" style={{ display: 'block', marginBottom: '0.25rem' }}>Palavra-passe</label>
+            <input type="password" className="input" placeholder="••••••••" />
+          </div>
+          <Link href="/dashboard" className="btn btn-primary" style={{ marginTop: '1rem', width: '100%' }}>
+            Entrar no Sistema
+          </Link>
+        </form>
+      </div>
     </div>
   );
 }
