@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BENEFICIARIO
+  TECNICO
+  DECISOR
+  FINANCIADOR
+  ADMIN
+}
+
+enum ReportStatus {
+  DRAFT
+  SUBMITTED
+  IN_REVIEW
+  RETURNED
+  APPROVED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(BENEFICIARIO)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subprojects Subproject[] @relation("SubprojectBeneficiary")
+  reports     QuarterlyReport[]
+  visits      FieldVisit[]
+}
+
+model Subproject {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String?
+  agreementNumber     String   @unique
+  startDate           DateTime
+  endDate             DateTime
+  location            String
+  totalBudget         Float
+  beneficiaryId       String
+  beneficiary         User     @relation("SubprojectBeneficiary", fields: [beneficiaryId], references: [id])
+  
+  budgetCategories    BudgetCategory[]
+  indicators          Indicator[]
+  reports             QuarterlyReport[]
+  disbursements       Disbursement[]
+  visits              FieldVisit[]
+  safeguards          Safeguard[]
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model BudgetCategory {
+  id            String   @id @default(cuid())
+  name          String
+  allocatedAmount Float
+  subprojectId  String
+  subproject    Subproject @relation(fields: [subprojectId], references: [id])
+  
+  expenses      Expense[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Indicator {
+  id            String   @id @default(cuid())
+  name          String
+  targetValue   Float
+  unit          String
+  subprojectId  String
+  subproject    Subproject @relation(fields: [subprojectId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model QuarterlyReport {
+  id            String   @id @default(cuid())
+  period        String   // e.g., "Q1 2026"
+  status        ReportStatus @default(DRAFT)
+  submissionDate DateTime?
+  reviewNotes   String?
+  
+  subprojectId  String
+  subproject    Subproject @relation(fields: [subprojectId], references: [id])
+  
+  submitterId   String
+  submitter     User     @relation(fields: [submitterId], references: [id])
+
+  expenses      Expense[]
+  attachments   Attachment[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Expense {
+  id               String   @id @default(cuid())
+  description      String
+  amount           Float
+  date             DateTime
+  
+  categoryId       String
+  category         BudgetCategory @relation(fields: [categoryId], references: [id])
+  
+  reportId         String
+  report           QuarterlyReport @relation(fields: [reportId], references: [id])
+  
+  attachments      Attachment[]
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Attachment {
+  id            String   @id @default(cuid())
+  fileName      String
+  fileUrl       String
+  fileType      String
+  size          Int
+  
+  reportId      String?
+  report        QuarterlyReport? @relation(fields: [reportId], references: [id])
+  
+  expenseId     String?
+  expense       Expense? @relation(fields: [expenseId], references: [id])
+
+  createdAt     DateTime @default(now())
+}
+
+model Disbursement {
+  id            String   @id @default(cuid())
+  phase         String
+  amount        Float
+  scheduledDate DateTime
+  actualDate    DateTime?
+  status        String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  
+  subprojectId  String
+  subproject    Subproject @relation(fields: [subprojectId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model FieldVisit {
+  id            String   @id @default(cuid())
+  scheduledDate DateTime
+  actualDate    DateTime?
+  findings      String?
+  status        String   @default("PLANNED") // PLANNED, COMPLETED
+  
+  subprojectId  String
+  subproject    Subproject @relation(fields: [subprojectId], references: [id])
+  
+  inspectorId   String
+  inspector     User     @relation(fields: [inspectorId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Safeguard {
+  id            String   @id @default(cuid())
+  type          String   // ENVIRONMENTAL, SOCIAL
+  description   String
+  status        String   @default("COMPLIANT") // COMPLIANT, NON_COMPLIANT, RESOLVED
+  
+  subprojectId  String
+  subproject    Subproject @relation(fields: [subprojectId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
