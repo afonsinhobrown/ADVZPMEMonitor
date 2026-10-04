@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { getPmeUser } from '@/lib/auth';
-import { uploadActivityPlan } from '@/app/pme/actions';
+import { addActivity, removeActivity, savePlanDraft, submitActivityPlan } from '@/app/pme/actions';
 import {
   currentQuarter,
   daysUntil,
@@ -37,6 +37,7 @@ export default async function PmeDashboard() {
     orderBy: { startDate: 'asc' },
     include: {
       budgetCategories: { orderBy: { name: 'asc' } },
+      activities: { orderBy: { order: 'asc' } },
       disbursements: { orderBy: { scheduledDate: 'asc' } },
       reports: {
         include: {
@@ -297,16 +298,10 @@ export default async function PmeDashboard() {
                   }}
                 >
                   <p style={{ margin: '0 0 0.5rem 0', fontWeight: 700, color: '#0f172a' }}>Plano de Actividades</p>
-                  {subproject.planFileUrl ? (
-                    <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#475569' }}>
-                      Submetido: <a href={subproject.planFileUrl} target="_blank" rel="noreferrer" style={{ color: '#166534', fontWeight: 600 }}>{subproject.planFileName || 'Ver plano'}</a>
-                      {subproject.planSubmittedAt ? ` em ${formatDate(subproject.planSubmittedAt)}` : ''}
-                    </p>
-                  ) : (
-                    <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#b45309' }}>
-                      Ainda não submeteu o plano de actividades deste projecto.
-                    </p>
-                  )}
+                  <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#475569' }}>
+                    Estado: <strong>{subproject.planStatus === 'DRAFT' ? 'Rascunho' : subproject.planStatus === 'PENDING' ? 'Submetido (em análise)' : subproject.planStatus === 'APPROVED' ? 'Aprovado' : 'Devolvido'}</strong>
+                    {subproject.planSubmittedAt ? ` · submetido em ${formatDate(subproject.planSubmittedAt)}` : ''}
+                  </p>
                   {subproject.planStatus === 'RETURNED' && subproject.planReviewNotes && (
                     <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#b91c1c' }}>
                       Devolvido pela ADVZ: {subproject.planReviewNotes}
@@ -317,13 +312,61 @@ export default async function PmeDashboard() {
                       Plano aprovado pela ADVZ.
                     </p>
                   )}
-                  <form action={uploadActivityPlan} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <input type="hidden" name="subprojectId" value={subproject.id} />
-                    <input type="file" name="plan" accept=".pdf,.xls,.xlsx,.docx" required style={{ fontSize: '0.85rem' }} />
-                    <button type="submit" className="btn btn-secondary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.85rem' }}>
-                      {subproject.planFileUrl ? 'Substituir plano' : 'Submeter plano'}
-                    </button>
-                  </form>
+                  {subproject.activities.length > 0 && (
+                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid var(--border)', textAlign: 'left' }}>
+                          <th style={{ padding: '0.4rem 0' }}>Actividade</th>
+                          <th>Responsável</th>
+                          <th>Início</th>
+                          <th>Fim</th>
+                          <th>Orçamento</th>
+                          {(subproject.planStatus === 'DRAFT' || subproject.planStatus === 'RETURNED') && <th></th>}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {subproject.activities.map(a => (
+                          <tr key={a.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                            <td style={{ padding: '0.5rem 0' }}>{a.description}</td>
+                            <td>{a.responsible || '-'}</td>
+                            <td>{a.startDate ? formatDate(a.startDate) : '-'}</td>
+                            <td>{a.endDate ? formatDate(a.endDate) : '-'}</td>
+                            <td>{a.budget != null ? formatMZN(a.budget) : '-'}</td>
+                            {(subproject.planStatus === 'DRAFT' || subproject.planStatus === 'RETURNED') && (
+                              <td>
+                                <form action={removeActivity}>
+                                  <input type="hidden" name="activityId" value={a.id} />
+                                  <button type="submit" style={{ background: 'none', border: 'none', color: '#b91c1c', cursor: 'pointer', fontSize: '0.8rem' }}>Remover</button>
+                                </form>
+                              </td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+
+                  {(subproject.planStatus === 'DRAFT' || subproject.planStatus === 'RETURNED') && (
+                    <form action={addActivity} style={{ display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', marginBottom: '1rem' }}>
+                      <input type="hidden" name="subprojectId" value={subproject.id} />
+                      <input className="form-input" name="description" placeholder="Descrição da actividade *" required />
+                      <input className="form-input" name="responsible" placeholder="Responsável" />
+                      <input className="form-input" name="startDate" type="date" />
+                      <input className="form-input" name="endDate" type="date" />
+                      <input className="form-input" name="budget" type="number" step="0.01" placeholder="Orçamento (MT)" />
+                      <input className="form-input" name="indicator" placeholder="Indicador" />
+                      <button type="submit" className="btn btn-secondary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.85rem' }}>+ Adicionar actividade</button>
+                    </form>
+                  )}
+
+                  <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <form action={savePlanDraft.bind(null, subproject.id)}>
+                      <button type="submit" className="btn btn-secondary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.85rem' }}>Guardar rascunho</button>
+                    </form>
+                    <form action={submitActivityPlan.bind(null, subproject.id)}>
+                      <button type="submit" className="btn btn-primary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.85rem' }}>Submeter plano</button>
+                    </form>
+                  </div>
                 </div>
 
                 {subproject.budgetCategories.length > 0 && (

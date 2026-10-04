@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import type { PME, Subproject } from '@prisma/client';
 import { createSubproject, reviewActivityPlan } from '@/app/actions';
 
-type SubprojectRow = Subproject & { pme: PME | null };
+type SubprojectRow = Subproject & { pme: PME | null; activities: import('@prisma/client').Activity[] };
 
 export default function SubprojectosClient({
   subprojectos,
@@ -235,21 +235,42 @@ export default function SubprojectosClient({
 
             <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
               <p className="font-bold" style={{ marginBottom: '0.5rem' }}>Plano de Actividades</p>
-              {selectedProject.planFileUrl ? (
-                <>
-                  <p>
-                    <a href={selectedProject.planFileUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
-                      {selectedProject.planFileName || 'Descarregar plano'}
-                    </a>
-                    {selectedProject.planSubmittedAt && (
-                      <span className="text-secondary text-sm"> — submetido em {new Date(selectedProject.planSubmittedAt).toLocaleDateString('pt-MZ')}</span>
-                    )}
-                    {' '}<span className={`badge ${selectedProject.planStatus === 'APPROVED' ? 'badge-success' : selectedProject.planStatus === 'RETURNED' ? '' : 'badge-warning'}`} style={selectedProject.planStatus === 'RETURNED' ? { background: '#fee2e2', color: '#b91c1c' } : {}}>{selectedProject.planStatus === 'APPROVED' ? 'Aprovado' : selectedProject.planStatus === 'RETURNED' ? 'Devolvido' : 'Pendente'}</span>
-                  </p>
-                  {selectedProject.planReviewNotes && (
-                    <p className="text-secondary text-sm" style={{ marginTop: '0.5rem' }}>Notas: {selectedProject.planReviewNotes}</p>
-                  )}
-                  <div style={{ marginTop: '1rem' }}>
+              {selectedProject.activities.length > 0 ? (
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '0.75rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid var(--border)', textAlign: 'left' }}>
+                      <th style={{ padding: '0.4rem 0' }}>Actividade</th>
+                      <th>Responsável</th>
+                      <th>Início</th>
+                      <th>Fim</th>
+                      <th>Orçamento</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedProject.activities.map(a => (
+                      <tr key={a.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                        <td style={{ padding: '0.5rem 0' }}>{a.description}</td>
+                        <td>{a.responsible || '-'}</td>
+                        <td>{a.startDate ? new Date(a.startDate).toLocaleDateString('pt-MZ') : '-'}</td>
+                        <td>{a.endDate ? new Date(a.endDate).toLocaleDateString('pt-MZ') : '-'}</td>
+                        <td>{a.budget != null ? a.budget.toLocaleString() : '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="text-secondary">A PME ainda não registou actividades no plano.</p>
+              )}
+              {selectedProject.planStatus && (
+                <p style={{ marginTop: '0.5rem' }}>
+                  Estado: <span className={`badge ${selectedProject.planStatus === 'APPROVED' ? 'badge-success' : selectedProject.planStatus === 'RETURNED' ? '' : 'badge-warning'}`} style={selectedProject.planStatus === 'RETURNED' ? { background: '#fee2e2', color: '#b91c1c' } : {}}>
+                    {selectedProject.planStatus === 'APPROVED' ? 'Aprovado' : selectedProject.planStatus === 'RETURNED' ? 'Devolvido' : selectedProject.planStatus === 'PENDING' ? 'Pendente' : 'Rascunho'}
+                  </span>
+                  {selectedProject.planReviewNotes && <span className="text-secondary text-sm"> — {selectedProject.planReviewNotes}</span>}
+                </p>
+              )}
+              {selectedProject.planStatus === 'PENDING' && (
+              <div style={{ marginTop: '1rem' }}>
                     <textarea
                       className="form-input"
                       placeholder="Notas da revisão do plano..."
@@ -262,9 +283,6 @@ export default function SubprojectosClient({
                       <button className="btn btn-primary" disabled={isLoading} onClick={() => handlePlanReview('APPROVED')}>Aprovar plano</button>
                     </div>
                   </div>
-                </>
-              ) : (
-                <p className="text-secondary">A PME ainda não submeteu o plano de actividades.</p>
               )}
             </div>
 

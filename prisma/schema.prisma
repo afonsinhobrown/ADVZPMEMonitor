@@ -71,7 +71,7 @@ model Subproject {
   planFileName    String?
   planFileUrl     String?
   planSubmittedAt DateTime?
-  planStatus      String    @default("PENDING") // PENDING, APPROVED, RETURNED
+  planStatus      String    @default("DRAFT") // DRAFT, PENDING, APPROVED, RETURNED
   planReviewNotes String?
 
   budgetCategories BudgetCategory[]
@@ -81,6 +81,7 @@ model Subproject {
   disbursements    Disbursement[]
   visits           FieldVisit[]
   safeguards       Safeguard[]
+  activities       Activity[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -253,4 +254,19 @@ model Alert {
   subproject   Subproject? @relation(fields: [subprojectId], references: [id])
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+}
+
+model Activity {
+  id           String     @id @default(cuid())
+  order        Int        @default(0)
+  description  String
+  responsible  String?
+  startDate    DateTime?
+  endDate      DateTime?
+  budget       Float?
+  indicator    String?
+  subprojectId String
+  subproject   Subproject @relation(fields: [subprojectId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }

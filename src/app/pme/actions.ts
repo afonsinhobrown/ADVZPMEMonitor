@@ -385,3 +385,89 @@ export async function uploadActivityPlan(formData: FormData): Promise<void> {
   revalidatePath('/subprojectos');
   redirect('/pme?aviso=plano-submetido');
 }
+
+export async function addActivity(formData: FormData): Promise<void> {
+  const user = await getPmeUser();
+  if (!user?.pme) redirect('/pme/login');
+
+  const subprojectId = readText(formData, 'subprojectId');
+  const description = readText(formData, 'description');
+
+  if (!description) redirect('/pme?aviso=actividade-invalida');
+
+  const subproject = await prisma.subproject.findFirst({
+    where: { id: subprojectId, pmeId: user.pme.id },
+  });
+  if (!subproject) redirect('/pme');
+  if (subproject.planStatus !== 'DRAFT' && subproject.planStatus !== 'RETURNED') {
+    redirect('/pme?aviso=plano-bloqueado');
+  }
+
+  const last = await prisma.activity.findFirst({
+    where: { subprojectId },
+    orderBy: { order: 'desc' },
+  });
+
+  await prisma.activity.create({
+    data: {
+      subprojectId,
+      order: (last?.order ?? 0) + 1,
+      description,
+      responsible: readText(formData, 'responsible') || null,
+      startDate: readText(formData, 'startDate') ? new Date(readText(formData, 'startDate')) : null,
+      endDate: readText(formData, 'endDate') ? new Date(readText(formData, 'endDate')) : null,
+      budget: formData.get('budget') ? parseNumber(formData.get('budget')) : null,
+      indicator: readText(formData, 'indicator') || null,
+    },
+  });
+
+  revalidatePath('/pme');
+  redirect('/pme?aviso=actividade-adicionada');
+}
+
+export async function removeActivity(formData: FormData): Promise<void> {
+  const user = await getPmeUser();
+  if (!user?.pme) redirect('/pme/login');
+
+  const activityId = readText(formData, 'activityId');
+  const activity = await prisma.activity.findFirst({
+    where: { id: activityId, subproject: { pmeId: user.pme.id } },
+    include: { subproject: true },
+  });
+  if (!activity) redirect('/pme');
+  if (activity.subproject.planStatus !== 'DRAFT' && activity.subproject.planStatus !== 'RETURNED') {
+    redirect('/pme?aviso=plano-bloqueado');
+  }
+
+  await prisma.activity.delete({ where: { id: activityId } });
+  revalidatePath('/pme');
+  redirect('/pme');
+}
+
+export async function savePlanDraft(subprojectId: string): Promise<void> {
+  const user = await getPmeUser();
+  if (!user?.pme) redirect('/pme/login');
+
+  await prisma.subproject.updateMany({
+    where: { id: subprojectId, pmeId: user.pme.id },
+    data: { planStatus: 'DRAFT' },
+  });
+  revalidatePath('/pme');
+  redirect('/pme?aviso=plano-rascunho');
+}
+
+export async function submitActivityPlan(subprojectId: string): Promise<void> {
+  const user = await getPmeUser();
+  if (!user?.pme) redirect('/pme/login');
+
+  const count = await prisma.activity.count({ where: { subprojectId, subproject: { pmeId: user.pme.id } } });
+  if (count === 0) redirect('/pme?aviso=plano-vazio');
+
+  await prisma.subproject.updateMany({
+    where: { id: subprojectId, pmeId: user.pme.id },
+    data: { planStatus: 'PENDING', planSubmittedAt: new Date(), planReviewNotes: null },
+  });
+  revalidatePath('/pme');
+  revalidatePath('/subprojectos');
+  redirect('/pme?aviso=plano-submetido');
+}

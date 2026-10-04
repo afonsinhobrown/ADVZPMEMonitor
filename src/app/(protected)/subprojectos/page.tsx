@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export default async function Subprojectos() {
   const subprojectos = await prisma.subproject.findMany({
-    include: { pme: true },
+    include: { pme: true, activities: { orderBy: { order: 'asc' } } },
     orderBy: { createdAt: 'desc' }
   });
 
