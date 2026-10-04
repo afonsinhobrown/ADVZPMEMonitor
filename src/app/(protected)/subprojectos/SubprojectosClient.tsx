@@ -5,6 +5,8 @@ import { createSubproject } from '@/app/actions';
 
 export default function SubprojectosClient({ subprojectos, pmes }: { subprojectos: any[], pmes: any[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -20,9 +22,15 @@ export default function SubprojectosClient({ subprojectos, pmes }: { subprojecto
     if (result.success) {
       alert("Subprojecto criado com sucesso!");
       setIsModalOpen(false);
+      window.location.reload();
     } else {
       alert("Erro ao criar Subprojecto: " + result.error);
     }
+  };
+
+  const openViewModal = (project: any) => {
+    setSelectedProject(project);
+    setIsViewModalOpen(true);
   };
 
   const filtered = subprojectos.filter(s => 
@@ -60,8 +68,10 @@ export default function SubprojectosClient({ subprojectos, pmes }: { subprojecto
               <th style={{ padding: '1rem 0' }}>Acordo Nº</th>
               <th>Nome</th>
               <th>Beneficiário</th>
-              <th>Localização</th>
               <th>Orçamento (MZN)</th>
+              <th>Status</th>
+              <th>Responsável</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -70,13 +80,24 @@ export default function SubprojectosClient({ subprojectos, pmes }: { subprojecto
                 <td style={{ padding: '1rem 0', fontWeight: '500' }}>{sub.agreementNumber}</td>
                 <td>{sub.name}</td>
                 <td className="text-secondary">{sub.pme?.name || 'Desconhecido'}</td>
-                <td className="text-secondary">{sub.location}</td>
                 <td className="font-semibold">{new Intl.NumberFormat('pt-MZ').format(sub.totalBudget)}</td>
+                <td>
+                  <span className={`badge ${sub.status === 'EM_CURSO' ? 'badge-success' : 'badge-warning'}`}>
+                    {sub.status.replace('_', ' ')}
+                  </span>
+                </td>
+                <td className="text-secondary">Afonso Pene</td>
+                <td>
+                  <div className="flex gap-2">
+                    <button className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => openViewModal(sub)}>👁️ Ver</button>
+                    <button className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>✏️ Editar</button>
+                  </div>
+                </td>
               </tr>
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
+                <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
                   Nenhum subprojecto encontrado.
                 </td>
               </tr>
@@ -85,14 +106,15 @@ export default function SubprojectosClient({ subprojectos, pmes }: { subprojecto
         </table>
       </div>
 
+      {/* Modal - Cadastro */}
       {isModalOpen && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
           background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
         }}>
-          <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '2rem', background: 'white', borderRadius: '12px', animation: 'fadeIn 0.2s ease-in-out' }}>
-            <h3 className="text-xl font-bold mb-4">Cadastrar Novo Subprojecto</h3>
+          <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '2.5rem', background: 'white', borderRadius: 'var(--radius-lg)', animation: 'fadeIn 0.2s ease-in-out' }}>
+            <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>Cadastrar Novo Subprojecto</h3>
             
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div>
@@ -140,7 +162,7 @@ export default function SubprojectosClient({ subprojectos, pmes }: { subprojecto
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
                 <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" style={{ background: '#22a039', color: 'white', border: 'none' }} disabled={isLoading}>
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>
                   {isLoading ? 'A Guardar...' : 'Guardar Subprojecto'}
                 </button>
               </div>
@@ -148,6 +170,81 @@ export default function SubprojectosClient({ subprojectos, pmes }: { subprojecto
           </div>
         </div>
       )}
+
+      {/* Modal - Visualizar */}
+      {isViewModalOpen && selectedProject && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+        }}>
+          <div className="card" style={{ width: '100%', maxWidth: '800px', padding: '2.5rem', background: 'white', borderRadius: 'var(--radius-lg)', animation: 'fadeIn 0.2s ease-in-out', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div className="flex justify-between items-center" style={{ marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
+              <div>
+                <h3 className="text-2xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>Detalhes do Processo</h3>
+                <p className="text-secondary">{selectedProject.agreementNumber}</p>
+              </div>
+              <span className={`badge ${selectedProject.status === 'EM_CURSO' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '1rem' }}>
+                {selectedProject.status.replace('_', ' ')}
+              </span>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4" style={{ marginBottom: '2rem' }}>
+              <div>
+                <p className="text-sm text-secondary font-semibold">Nome do Projecto</p>
+                <p className="text-lg font-medium">{selectedProject.name}</p>
+              </div>
+              <div>
+                <p className="text-sm text-secondary font-semibold">Beneficiário (PME)</p>
+                <p className="text-lg font-medium">{selectedProject.pme?.name || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-secondary font-semibold">Localização</p>
+                <p className="text-lg font-medium">{selectedProject.location}</p>
+              </div>
+              <div>
+                <p className="text-sm text-secondary font-semibold">Responsável ADVZ</p>
+                <p className="text-lg font-medium">Afonso Pene</p>
+              </div>
+            </div>
+
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
+              <div className="flex justify-between items-center mb-4">
+                <p className="font-bold">Progresso Financeiro</p>
+                <p className="font-bold text-lg" style={{ color: 'var(--accent-primary)' }}>Orçamento: {new Intl.NumberFormat('pt-MZ').format(selectedProject.totalBudget)} MZN</p>
+              </div>
+              <div style={{ height: '8px', background: 'var(--border)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: '35%', background: 'var(--accent-primary)' }}></div>
+              </div>
+              <p className="text-sm text-secondary" style={{ marginTop: '0.5rem', textAlign: 'right' }}>35% Executado</p>
+            </div>
+
+            <div style={{ marginBottom: '2rem' }}>
+              <h4 className="font-bold mb-4">Cronograma e Datas</h4>
+              <div className="flex justify-between p-4" style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
+                <div>
+                  <p className="text-sm text-secondary font-semibold">Início</p>
+                  <p>{new Date(selectedProject.startDate).toLocaleDateString('pt-MZ')}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-secondary font-semibold">Término Previsto</p>
+                  <p>{new Date(selectedProject.endDate).toLocaleDateString('pt-MZ')}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-secondary font-semibold">Data de Criação no Sistema</p>
+                  <p>{new Date(selectedProject.createdAt).toLocaleDateString('pt-MZ')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
+              <button type="button" className="btn btn-secondary" onClick={() => setIsViewModalOpen(false)}>Fechar Processo</button>
+              <button type="button" className="btn btn-primary" onClick={() => setIsViewModalOpen(false)}>✏️ Editar Dados</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: scale(0.95); }
