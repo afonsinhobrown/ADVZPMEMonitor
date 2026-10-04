@@ -378,7 +378,7 @@ export async function uploadActivityPlan(formData: FormData): Promise<void> {
 
   await prisma.subproject.update({
     where: { id: subproject.id },
-    data: { planFileName: file.name, planFileUrl: stored.fileUrl, planSubmittedAt: new Date() },
+    data: { planFileName: file.name, planFileUrl: stored.fileUrl, planSubmittedAt: new Date(), planStatus: 'PENDING', planReviewNotes: null },
   });
 
   revalidatePath('/pme');

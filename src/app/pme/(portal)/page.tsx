@@ -307,6 +307,16 @@ export default async function PmeDashboard() {
                       Ainda não submeteu o plano de actividades deste projecto.
                     </p>
                   )}
+                  {subproject.planStatus === 'RETURNED' && subproject.planReviewNotes && (
+                    <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#b91c1c' }}>
+                      Devolvido pela ADVZ: {subproject.planReviewNotes}
+                    </p>
+                  )}
+                  {subproject.planStatus === 'APPROVED' && (
+                    <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#166534', fontWeight: 600 }}>
+                      Plano aprovado pela ADVZ.
+                    </p>
+                  )}
                   <form action={uploadActivityPlan} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
                     <input type="hidden" name="subprojectId" value={subproject.id} />
                     <input type="file" name="plan" accept=".pdf,.xls,.xlsx,.docx" required style={{ fontSize: '0.85rem' }} />

@@ -71,6 +71,8 @@ model Subproject {
   planFileName    String?
   planFileUrl     String?
   planSubmittedAt DateTime?
+  planStatus      String    @default("PENDING") // PENDING, APPROVED, RETURNED
+  planReviewNotes String?
 
   budgetCategories BudgetCategory[]
   indicators       Indicator[]

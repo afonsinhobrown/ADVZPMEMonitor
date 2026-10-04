@@ -178,3 +178,20 @@ export async function reviewQuarterlyReport(reportId: string, status: 'APPROVED'
     return { success: false, error: errorMessage(error) };
   }
 }
+
+// Rever plano de actividades submetido pela PME
+export async function reviewActivityPlan(subprojectId: string, status: 'APPROVED' | 'RETURNED', notes: string) {
+  try {
+    const subproject = await prisma.subproject.update({
+      where: { id: subprojectId },
+      data: { planStatus: status, planReviewNotes: notes || null },
+    });
+
+    revalidatePath('/subprojectos');
+    revalidatePath('/pme');
+    return { success: true, data: subproject };
+  } catch (error: unknown) {
+    console.error('Erro ao rever plano:', error);
+    return { success: false, error: errorMessage(error) };
+  }
+}

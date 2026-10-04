@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import type { PME, Subproject } from '@prisma/client';
-import { createSubproject } from '@/app/actions';
+import { createSubproject, reviewActivityPlan } from '@/app/actions';
 
 type SubprojectRow = Subproject & { pme: PME | null };
 
@@ -18,6 +18,22 @@ export default function SubprojectosClient({
   const [selectedProject, setSelectedProject] = useState<SubprojectRow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [planNotes, setPlanNotes] = useState('');
+
+  const handlePlanReview = async (status: 'APPROVED' | 'RETURNED') => {
+    if (!selectedProject) return;
+    setIsLoading(true);
+    const result = await reviewActivityPlan(selectedProject.id, status, planNotes);
+    setIsLoading(false);
+    if (result.success) {
+      alert(status === 'APPROVED' ? 'Plano aprovado.' : 'Plano devolvido à PME.');
+      setIsViewModalOpen(false);
+      setPlanNotes('');
+      window.location.reload();
+    } else {
+      alert('Erro: ' + result.error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -220,14 +236,33 @@ export default function SubprojectosClient({
             <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
               <p className="font-bold" style={{ marginBottom: '0.5rem' }}>Plano de Actividades</p>
               {selectedProject.planFileUrl ? (
-                <p>
-                  <a href={selectedProject.planFileUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
-                    {selectedProject.planFileName || 'Descarregar plano'}
-                  </a>
-                  {selectedProject.planSubmittedAt && (
-                    <span className="text-secondary text-sm"> — submetido em {new Date(selectedProject.planSubmittedAt).toLocaleDateString('pt-MZ')}</span>
+                <>
+                  <p>
+                    <a href={selectedProject.planFileUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
+                      {selectedProject.planFileName || 'Descarregar plano'}
+                    </a>
+                    {selectedProject.planSubmittedAt && (
+                      <span className="text-secondary text-sm"> — submetido em {new Date(selectedProject.planSubmittedAt).toLocaleDateString('pt-MZ')}</span>
+                    )}
+                    {' '}<span className={`badge ${selectedProject.planStatus === 'APPROVED' ? 'badge-success' : selectedProject.planStatus === 'RETURNED' ? '' : 'badge-warning'}`} style={selectedProject.planStatus === 'RETURNED' ? { background: '#fee2e2', color: '#b91c1c' } : {}}>{selectedProject.planStatus === 'APPROVED' ? 'Aprovado' : selectedProject.planStatus === 'RETURNED' ? 'Devolvido' : 'Pendente'}</span>
+                  </p>
+                  {selectedProject.planReviewNotes && (
+                    <p className="text-secondary text-sm" style={{ marginTop: '0.5rem' }}>Notas: {selectedProject.planReviewNotes}</p>
                   )}
-                </p>
+                  <div style={{ marginTop: '1rem' }}>
+                    <textarea
+                      className="form-input"
+                      placeholder="Notas da revisão do plano..."
+                      value={planNotes}
+                      onChange={e => setPlanNotes(e.target.value)}
+                      style={{ width: '100%', minHeight: '70px', marginBottom: '0.5rem' }}
+                    />
+                    <div className="flex gap-2">
+                      <button className="btn btn-secondary" disabled={isLoading} onClick={() => handlePlanReview('RETURNED')}>Devolver à PME</button>
+                      <button className="btn btn-primary" disabled={isLoading} onClick={() => handlePlanReview('APPROVED')}>Aprovar plano</button>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <p className="text-secondary">A PME ainda não submeteu o plano de actividades.</p>
               )}
