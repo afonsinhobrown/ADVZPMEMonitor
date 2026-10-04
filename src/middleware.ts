@@ -37,6 +37,8 @@ export const config = {
     '/relatorios-tecnicos/:path*',
     '/comparacao-relatorios/:path*',
     '/estatisticas/:path*',
-    '/visitas/:path*'
+    '/visitas/:path*',
+    '/alertas/:path*',
+    '/imprimir/:path*'
   ],
 };

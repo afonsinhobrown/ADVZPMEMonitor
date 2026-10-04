@@ -1,0 +1,12 @@
+{
+  "name": "ADVZ PME Monitor",
+  "short_name": "ADVZMonitor",
+  "description": "Sistema de Monitoria de Subprojectos",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "/vercel.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

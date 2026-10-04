@@ -26,6 +26,12 @@ export default function Sidebar() {
         <Link href="/subprojectos" className={`sidebar-link ${isActive('/subprojectos') ? 'active' : ''}`}>
           <span style={{ marginRight: '0.75rem', fontSize: '1.2rem' }}>📋</span> Subprojectos
         </Link>
+        <Link href="/relatorios" className={`sidebar-link ${isActive('/relatorios') ? 'active' : ''}`}>
+          <span style={{ marginRight: '0.75rem', fontSize: '1.2rem' }}>📁</span> Revisão Relatórios
+        </Link>
+        <Link href="/alertas" className={`sidebar-link ${isActive('/alertas') ? 'active' : ''}`}>
+          <span style={{ marginRight: '0.75rem', fontSize: '1.2rem' }}>🔔</span> Alertas
+        </Link>
         <Link href="/relatorios-tecnicos" className={`sidebar-link ${isActive('/relatorios-tecnicos') ? 'active' : ''}`}>
           <span style={{ marginRight: '0.75rem', fontSize: '1.2rem' }}>📝</span> Meus Relatórios
         </Link>
