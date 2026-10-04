@@ -12,13 +12,17 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-export default function EstatisticasChart({ data }: { data: any[] }) {
-  // Transform db data to recharts expected structure
-  const chartData = data.map(sub => ({
-    name: sub.name.substring(0, 15) + '...',
+export type ChartDatum = {
+  name: string;
+  totalBudget: number;
+  executed: number;
+};
+
+export default function EstatisticasChart({ data }: { data: ChartDatum[] }) {
+  const chartData = data.map((sub) => ({
+    name: sub.name.length > 15 ? `${sub.name.slice(0, 15)}…` : sub.name,
     'Orçamento': sub.totalBudget,
-    // Just a mock execution value based on budget for the sake of the chart MVP
-    'Executado': sub.totalBudget * (Math.random() * 0.4 + 0.1) 
+    'Executado': sub.executed,
   }));
 
   return (

@@ -37,7 +37,7 @@ export default function LandingPage() {
             Agência de Desenvolvimento do Vale do Zambeze
           </span>
           <h2 style={{ fontSize: '3.5rem', fontWeight: '800', maxWidth: '800px', lineHeight: '1.2', marginBottom: '1.5rem', textShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
-            Sistema de Gestão de Projectos e PME's
+            Sistema de Gestão de Projectos e PME&apos;s
           </h2>
           <p style={{ fontSize: '1.2rem', color: '#e3e8ee', maxWidth: '600px', marginBottom: '2.5rem', lineHeight: '1.6' }}>
             Plataforma oficial para monitoria contínua, reporte de actividades e gestão transparente do Fundo Catalítico e apoio ao sector privado.

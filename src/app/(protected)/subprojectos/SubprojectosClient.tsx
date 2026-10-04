@@ -1,12 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { PME, Subproject } from '@prisma/client';
 import { createSubproject } from '@/app/actions';
 
-export default function SubprojectosClient({ subprojectos, pmes }: { subprojectos: any[], pmes: any[] }) {
+type SubprojectRow = Subproject & { pme: PME | null };
+
+export default function SubprojectosClient({
+  subprojectos,
+  pmes
+}: {
+  subprojectos: SubprojectRow[],
+  pmes: PME[]
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [selectedProject, setSelectedProject] = useState<SubprojectRow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -28,7 +37,7 @@ export default function SubprojectosClient({ subprojectos, pmes }: { subprojecto
     }
   };
 
-  const openViewModal = (project: any) => {
+  const openViewModal = (project: SubprojectRow) => {
     setSelectedProject(project);
     setIsViewModalOpen(true);
   };

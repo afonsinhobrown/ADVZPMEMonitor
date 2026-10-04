@@ -1,12 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { Subproject, TechnicalReport, User } from '@prisma/client';
 import { createTechnicalReport } from '@/app/actions';
 
-export default function RelatoriosClient({ reports, projects }: { reports: any[], projects: any[] }) {
+type TechnicalReportRow = TechnicalReport & { subproject: Subproject; technician: User };
+
+export default function RelatoriosClient({
+  reports,
+  projects
+}: {
+  reports: TechnicalReportRow[],
+  projects: Subproject[]
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [selectedReport, setSelectedReport] = useState<TechnicalReportRow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -28,7 +37,7 @@ export default function RelatoriosClient({ reports, projects }: { reports: any[]
     }
   };
 
-  const openViewModal = (report: any) => {
+  const openViewModal = (report: TechnicalReportRow) => {
     setSelectedReport(report);
     setIsViewModalOpen(true);
   };

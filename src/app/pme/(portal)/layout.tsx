@@ -1,7 +1,20 @@
 import React from 'react';
-import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getPmeUser } from '@/lib/auth';
+import { logoutPME } from '@/app/auth-actions';
+import PmeNav from './PmeNav';
 
-export default function PMELayout({ children }: { children: React.ReactNode }) {
+export default async function PMELayout({ children }: { children: React.ReactNode }) {
+  const user = await getPmeUser();
+  if (!user || !user.pme) redirect('/pme/login');
+
+  const initials = user.pme.name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, sans-serif' }}>
       {/* Top Navbar Exclusiva para PME */}
@@ -41,8 +54,8 @@ export default function PMELayout({ children }: { children: React.ReactNode }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{ textAlign: 'right' }}>
-              <p style={{ margin: 0, fontWeight: 600, color: '#0f172a', fontSize: '0.95rem' }}>Agro Lda</p>
-              <p style={{ margin: 0, color: '#64748b', fontSize: '0.8rem' }}>NIF: 123456789</p>
+              <p style={{ margin: 0, fontWeight: 600, color: '#0f172a', fontSize: '0.95rem' }}>{user.pme.name}</p>
+              <p style={{ margin: 0, color: '#64748b', fontSize: '0.8rem' }}>NIF: {user.pme.nif}</p>
             </div>
             <div style={{ 
               width: '40px', 
@@ -55,15 +68,19 @@ export default function PMELayout({ children }: { children: React.ReactNode }) {
               fontWeight: 'bold',
               color: '#475569'
             }}>
-              AG
+              {initials}
             </div>
           </div>
           <div style={{ width: '1px', height: '30px', background: '#e2e8f0' }}></div>
-          <Link href="/" style={{ color: '#ef4444', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}>Sair</Link>
+          <form action={logoutPME}>
+            <button id="pme-logout" type="submit" style={{ color: '#ef4444', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem' }}>Sair</button>
+          </form>
         </div>
       </header>
 
-      <main style={{ padding: '3rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <PmeNav />
+
+      <main style={{ padding: '2.5rem 3rem 4rem 3rem', maxWidth: '1400px', margin: '0 auto' }}>
         {children}
       </main>
     </div>

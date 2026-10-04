@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { PME, QuarterlyReport, Subproject, TechnicalReport } from '@prisma/client';
 
-export default function ComparacaoClient({ 
-  projects, 
-  pmeReports, 
-  techReports 
-}: { 
-  projects: any[], 
-  pmeReports: any[], 
-  techReports: any[] 
+export default function ComparacaoClient({
+  projects,
+  pmeReports,
+  techReports
+}: {
+  projects: (Subproject & { pme: PME | null })[],
+  pmeReports: QuarterlyReport[],
+  techReports: TechnicalReport[]
 }) {
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [selectedPeriod, setSelectedPeriod] = useState<string>('Q1 2026');

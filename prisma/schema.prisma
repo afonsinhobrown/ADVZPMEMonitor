@@ -112,6 +112,13 @@ model QuarterlyReport {
   status        ReportStatus @default(DRAFT)
   submissionDate DateTime?
   reviewNotes   String?
+  reviewedAt    DateTime?
+
+  mainActivity      String?
+  progressDescription String?
+  fundsUsed         Float?
+  challenges        String?
+  safeguardsNotes   String?
   
   subprojectId  String
   subproject    Subproject @relation(fields: [subprojectId], references: [id])

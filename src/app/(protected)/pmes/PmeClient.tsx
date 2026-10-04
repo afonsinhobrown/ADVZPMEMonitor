@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { PME } from '@prisma/client';
 import { createPME } from '@/app/actions';
 
-export default function PmeClient({ pmes }: { pmes: any[] }) {
+export default function PmeClient({ pmes }: { pmes: PME[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');

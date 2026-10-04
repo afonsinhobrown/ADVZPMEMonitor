@@ -5,6 +5,10 @@ import { revalidatePath } from 'next/cache';
 
 const prisma = new PrismaClient();
 
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : 'Erro desconhecido';
+}
+
 // Criar nova PME
 export async function createPME(formData: FormData) {
   const name = formData.get('name') as string;
@@ -38,9 +42,9 @@ export async function createPME(formData: FormData) {
 
     revalidatePath('/pmes');
     return { success: true, data: newPme };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao criar PME:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: errorMessage(error) };
   }
 }
 
@@ -75,9 +79,9 @@ export async function createSubproject(formData: FormData) {
     
     revalidatePath('/subprojectos');
     return { success: true, data: newProject };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao criar Subprojecto:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: errorMessage(error) };
   }
 }
 
@@ -108,9 +112,9 @@ export async function createTechnicalReport(formData: FormData) {
 
     revalidatePath('/relatorios-tecnicos');
     return { success: true, data: newReport };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao criar Relatório Técnico:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: errorMessage(error) };
   }
 }
 
@@ -139,8 +143,8 @@ export async function createFieldVisit(formData: FormData) {
 
     revalidatePath('/visitas');
     return { success: true, data: newVisit };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao agendar Visita de Campo:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: errorMessage(error) };
   }
 }

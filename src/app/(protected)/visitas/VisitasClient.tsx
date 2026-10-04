@@ -1,12 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { FieldVisit, Subproject, User } from '@prisma/client';
 import { createFieldVisit } from '@/app/actions';
 
-export default function VisitasClient({ visits, projects }: { visits: any[], projects: any[] }) {
+type FieldVisitRow = FieldVisit & { subproject: Subproject; inspector: User };
+
+export default function VisitasClient({
+  visits,
+  projects
+}: {
+  visits: FieldVisitRow[],
+  projects: Subproject[]
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [selectedVisit, setSelectedVisit] = useState<any>(null);
+  const [selectedVisit, setSelectedVisit] = useState<FieldVisitRow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -28,7 +37,7 @@ export default function VisitasClient({ visits, projects }: { visits: any[], pro
     }
   };
 
-  const openViewModal = (visit: any) => {
+  const openViewModal = (visit: FieldVisitRow) => {
     setSelectedVisit(visit);
     setIsViewModalOpen(true);
   };
