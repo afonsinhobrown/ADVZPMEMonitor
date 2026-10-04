@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import type { Subproject, PME, Activity, BudgetCategory, Disbursement, QuarterlyReport } from '@prisma/client';
 
 type Project = Subproject & {
-  pme: PME | null;
+  pme?: PME | null;
   activities: Activity[];
   budgetCategories: BudgetCategory[];
   disbursements: Disbursement[];
