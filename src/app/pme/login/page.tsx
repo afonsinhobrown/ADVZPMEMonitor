@@ -21,7 +21,7 @@ export default function PmeLogin() {
         <form className="flex flex-col gap-4" action={formAction}>
           <div>
             <label htmlFor="pme-nif" className="text-sm font-semibold" style={{ display: 'block', marginBottom: '0.25rem' }}>
-              NIF da Empresa
+              NUIT da Empresa
             </label>
             <input id="pme-nif" name="nif" type="text" className="input" placeholder="Ex: 123456789" required />
           </div>

@@ -55,7 +55,7 @@ export default async function PMELayout({ children }: { children: React.ReactNod
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{ textAlign: 'right' }}>
               <p style={{ margin: 0, fontWeight: 600, color: '#0f172a', fontSize: '0.95rem' }}>{user.pme.name}</p>
-              <p style={{ margin: 0, color: '#64748b', fontSize: '0.8rem' }}>NIF: {user.pme.nif}</p>
+              <p style={{ margin: 0, color: '#64748b', fontSize: '0.8rem' }}>NUIT: {user.pme.nif}</p>
             </div>
             <div style={{ 
               width: '40px', 

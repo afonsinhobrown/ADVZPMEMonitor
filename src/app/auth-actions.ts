@@ -28,16 +28,16 @@ export async function loginAgency(_prev: AuthState, formData: FormData): Promise
   redirect('/dashboard');
 }
 
-// Login da PME (NIF + código de acesso)
+// Login da PME (NUIT + código de acesso)
 export async function loginPME(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const nif = String(formData.get('nif') || '').trim();
   const password = String(formData.get('password') || '');
 
-  if (!nif || !password) return { error: 'Preencha o NIF e o código de acesso.' };
+  if (!nif || !password) return { error: 'Preencha o NUIT e o código de acesso.' };
 
   const pme = await prisma.pME.findUnique({ where: { nif }, include: { user: true } });
   if (!pme || !verifyPassword(password, pme.user.password)) {
-    return { error: 'NIF ou código de acesso incorrecto.' };
+    return { error: 'NUIT ou código de acesso incorrecto.' };
   }
 
   await setSession(PME_COOKIE, pme.userId);

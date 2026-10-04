@@ -50,7 +50,7 @@ export default function PmeClient({ pmes }: { pmes: PME[] }) {
           <thead>
             <tr style={{ borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
               <th style={{ padding: '1rem' }}>Nome da PME</th>
-              <th style={{ padding: '1rem' }}>NIF</th>
+              <th style={{ padding: '1rem' }}>NUIT</th>
               <th style={{ padding: '1rem' }}>Sector</th>
               <th style={{ padding: '1rem' }}>Contacto</th>
               <th style={{ padding: '1rem' }}>ID no Sistema</th>
@@ -96,7 +96,7 @@ export default function PmeClient({ pmes }: { pmes: PME[] }) {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>NIF</label>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>NUIT</label>
                   <input type="text" name="nif" className="form-input" style={{ width: '100%' }} placeholder="Número de Identificação" required />
                 </div>
                 <div>
