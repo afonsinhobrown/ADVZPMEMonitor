@@ -1,6 +1,10 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 
 export default function CadastrosPME() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div style={{ padding: '2rem' }}>
       <h2 className="text-xl font-bold mb-4">Cadastros de PMEs</h2>
@@ -9,7 +13,7 @@ export default function CadastrosPME() {
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <input type="text" placeholder="Buscar PME..." className="form-input" style={{ width: '300px' }} />
-          <button className="btn btn-primary">+ Nova PME</button>
+          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>+ Nova PME</button>
         </div>
 
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
@@ -46,6 +50,57 @@ export default function CadastrosPME() {
           </tbody>
         </table>
       </div>
+
+      {isModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+        }}>
+          <div className="card" style={{ width: '100%', maxWidth: '500px', padding: '2rem', background: 'white', borderRadius: '12px', animation: 'fadeIn 0.2s ease-in-out' }}>
+            <h3 className="text-xl font-bold mb-4">Cadastrar Nova PME</h3>
+            
+            <form className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("PME registada com sucesso!"); }}>
+              <div>
+                <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Nome da Empresa</label>
+                <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Insira o nome" required />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>NIF</label>
+                  <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Número de Identificação" required />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Sector</label>
+                  <select className="form-input" style={{ width: '100%' }}>
+                    <option>Agricultura</option>
+                    <option>Pescas</option>
+                    <option>Tecnologia</option>
+                    <option>Indústria</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Contacto Telefónico</label>
+                <input type="text" className="form-input" style={{ width: '100%' }} placeholder="+258 ..." />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary" style={{ background: '#22a039', color: 'white', border: 'none' }}>Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
     </div>
   );
 }
