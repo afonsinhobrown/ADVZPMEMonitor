@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { getPmeUser } from '@/lib/auth';
 import { addActivity, removeActivity, savePlanDraft, submitActivityPlan } from '@/app/pme/actions';
+import PmeProjectList from './PmeProjectList';
 import {
   currentQuarter,
   daysUntil,
@@ -129,6 +130,7 @@ export default async function PmeDashboard() {
         </Panel>
       ) : (
         <>
+          <PmeProjectList projects={subprojects} />
           {missingThisQuarter.length > 0 && (
             <Notice
               tone={isPastDeadline(deadline, now) ? 'danger' : 'warning'}
