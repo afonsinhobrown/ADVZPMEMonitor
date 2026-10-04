@@ -80,3 +80,36 @@ export async function createSubproject(formData: FormData) {
     return { success: false, error: error.message };
   }
 }
+
+// Criar Relatório Técnico
+export async function createTechnicalReport(formData: FormData) {
+  const subprojectId = formData.get('subprojectId') as string;
+  const period = formData.get('period') as string;
+  const content = formData.get('content') as string;
+
+  try {
+    // Pegar o primeiro admin/tecnico para ser o autor, só para o MVP
+    const technician = await prisma.user.findFirst({
+      where: { role: 'TECNICO' }
+    }) || await prisma.user.findFirst();
+    
+    if (!technician) return { success: false, error: 'Técnico não encontrado no sistema' };
+
+    const newReport = await prisma.technicalReport.create({
+      data: {
+        subprojectId,
+        period,
+        content,
+        technicianId: technician.id,
+        status: 'SUBMITTED',
+        submissionDate: new Date()
+      }
+    });
+
+    revalidatePath('/relatorios-tecnicos');
+    return { success: true, data: newReport };
+  } catch (error: any) {
+    console.error("Erro ao criar Relatório Técnico:", error);
+    return { success: false, error: error.message };
+  }
+}
