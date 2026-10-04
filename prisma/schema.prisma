@@ -35,6 +35,23 @@ model User {
   subprojects Subproject[] @relation("SubprojectBeneficiary")
   reports     QuarterlyReport[]
   visits      FieldVisit[]
+  pme         PME?
+  technicalReports TechnicalReport[]
+}
+
+model PME {
+  id          String   @id @default(cuid())
+  name        String
+  nif         String?  @unique
+  contact     String?
+  address     String?
+  sector      String?
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  projects    Subproject[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Subproject {
@@ -48,10 +65,14 @@ model Subproject {
   totalBudget         Float
   beneficiaryId       String
   beneficiary         User     @relation("SubprojectBeneficiary", fields: [beneficiaryId], references: [id])
+  pmeId               String?
+  pme                 PME?     @relation(fields: [pmeId], references: [id])
+  status              String   @default("EM_CURSO") // EM_CURSO, ATRASADO, CONCLUIDO
   
   budgetCategories    BudgetCategory[]
   indicators          Indicator[]
   reports             QuarterlyReport[]
+  technicalReports    TechnicalReport[]
   disbursements       Disbursement[]
   visits              FieldVisit[]
   safeguards          Safeguard[]
@@ -133,6 +154,9 @@ model Attachment {
   reportId      String?
   report        QuarterlyReport? @relation(fields: [reportId], references: [id])
   
+  technicalReportId String?
+  technicalReport   TechnicalReport? @relation("TechnicalReportAttachments", fields: [technicalReportId], references: [id])
+  
   expenseId     String?
   expense       Expense? @relation(fields: [expenseId], references: [id])
 
@@ -179,6 +203,25 @@ model Safeguard {
   
   subprojectId  String
   subproject    Subproject @relation(fields: [subprojectId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model TechnicalReport {
+  id            String   @id @default(cuid())
+  period        String   // e.g., "Q1 2026"
+  content       String
+  status        ReportStatus @default(DRAFT)
+  submissionDate DateTime?
+  
+  subprojectId  String
+  subproject    Subproject @relation(fields: [subprojectId], references: [id])
+  
+  technicianId  String
+  technician    User     @relation(fields: [technicianId], references: [id])
+
+  attachments   Attachment[] @relation("TechnicalReportAttachments")
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

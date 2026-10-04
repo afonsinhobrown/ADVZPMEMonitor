@@ -14,6 +14,7 @@ export default function LandingPage() {
         <nav className="flex gap-4 items-center">
           <Link href="#" className="text-sm font-semibold text-secondary hover:text-primary">Início</Link>
           <Link href="#" className="text-sm font-semibold text-secondary hover:text-primary">Sobre a Agência</Link>
+          <Link href="/portal-pme" className="text-sm font-semibold text-secondary hover:text-primary" style={{ color: '#22a039' }}>Portal da PME</Link>
           <Link href="/login" className="btn" style={{ background: '#22a039', color: 'white', padding: '0.5rem 1.5rem', borderRadius: '50px' }}>
             Acesso ao Sistema
           </Link>
@@ -45,8 +46,8 @@ export default function LandingPage() {
             <Link href="/login" className="btn" style={{ background: '#22a039', color: 'white', padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: 'none', boxShadow: '0 4px 14px rgba(34, 160, 57, 0.4)' }}>
               Entrar no Sistema
             </Link>
-            <Link href="#features" className="btn" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', color: 'white', padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.3)' }}>
-              Saber Mais
+            <Link href="/portal-pme" className="btn" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', color: 'white', padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.3)' }}>
+              Acessar Portal da PME
             </Link>
           </div>
         </section>
@@ -57,16 +58,20 @@ export default function LandingPage() {
             <h3 style={{ fontSize: '2rem', fontWeight: '700', color: '#1a1f36', marginBottom: '1rem' }}>Forjando Parcerias Estratégicas</h3>
             <p className="text-secondary" style={{ maxWidth: '600px', margin: '0 auto' }}>Acompanhe em tempo real a execução física e financeira de cada subprojecto financiado.</p>
           </div>
-          <div className="grid grid-cols-3 gap-4" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <div className="card" style={{ borderTop: '4px solid #22a039' }}>
-              <h4 className="text-lg font-bold" style={{ marginBottom: '0.5rem' }}>Reporte Simplificado</h4>
-              <p className="text-sm text-secondary">Formulários digitais para PME's submeterem os seus relatórios trimestrais de forma intuitiva.</p>
+              <h4 className="text-lg font-bold" style={{ marginBottom: '0.5rem' }}>Portal da PME</h4>
+              <p className="text-sm text-secondary">Acesso direto para as empresas acompanharem suas atividades em curso e submeterem anexos e evidências de forma intuitiva.</p>
             </div>
             <div className="card" style={{ borderTop: '4px solid #0076d6' }}>
-              <h4 className="text-lg font-bold" style={{ marginBottom: '0.5rem' }}>Gestão de Orçamentos</h4>
-              <p className="text-sm text-secondary">Controlo rigoroso das despesas por rubrica e comparação automática com o orçamento aprovado.</p>
+              <h4 className="text-lg font-bold" style={{ marginBottom: '0.5rem' }}>Reporte Técnico</h4>
+              <p className="text-sm text-secondary">Técnicos submetem e analisam relatórios trimestrais com histórico de progresso de cada projeto.</p>
             </div>
             <div className="card" style={{ borderTop: '4px solid #ffb400' }}>
+              <h4 className="text-lg font-bold" style={{ marginBottom: '0.5rem' }}>Estatísticas Dinâmicas</h4>
+              <p className="text-sm text-secondary">Dashboards completos indicando projetos em dia, projetos atrasados e níveis de aceitação em tempo real.</p>
+            </div>
+            <div className="card" style={{ borderTop: '4px solid #8e44ad' }}>
               <h4 className="text-lg font-bold" style={{ marginBottom: '0.5rem' }}>Visitas de Campo</h4>
               <p className="text-sm text-secondary">Registo de monitoria local, com fotografias georreferenciadas e operação sem ligação à internet.</p>
             </div>

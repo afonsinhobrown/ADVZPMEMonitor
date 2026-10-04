@@ -13,10 +13,22 @@ export default function Sidebar() {
             <Link href="/dashboard" className="font-semibold" style={{ color: 'var(--accent-primary)' }}>Dashboard</Link>
           </li>
           <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
-            <Link href="/subprojectos" className="text-secondary hover:text-primary">Subprojectos</Link>
+            <Link href="/pmes" className="text-secondary hover:text-primary">Cadastros PMEs</Link>
           </li>
           <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
-            <Link href="/relatorios" className="text-secondary hover:text-primary">Relatórios</Link>
+            <Link href="/subprojectos" className="text-secondary hover:text-primary">Projectos / Subprojectos</Link>
+          </li>
+          <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
+            <Link href="/relatorios-tecnicos" className="text-secondary hover:text-primary">Relatórios do Técnico</Link>
+          </li>
+          <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
+            <Link href="/estatisticas" className="text-secondary hover:text-primary">Estatísticas</Link>
+          </li>
+          <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
+            <Link href="/portal-pme" className="text-secondary hover:text-primary">Portal da PME</Link>
+          </li>
+          <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
+            <Link href="/relatorios" className="text-secondary hover:text-primary">Outros Relatórios</Link>
           </li>
           <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
             <Link href="/visitas" className="text-secondary hover:text-primary">Visitas de Campo</Link>
