@@ -130,6 +130,10 @@ export default async function PmeDashboard() {
         </Panel>
       ) : (
         <>
+          <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '10px' }}>
+            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 700, color: '#075985' }}>📋 Plano de Actividades</p>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#0369a1' }}>Clique no projecto abaixo → separador <strong>"Actividades"</strong> → preencha o formulário → <strong>Guardar rascunho</strong> ou <strong>Submeter plano</strong></p>
+          </div>
           <PmeProjectList projects={subprojects} />
           {missingThisQuarter.length > 0 && (
             <Notice
