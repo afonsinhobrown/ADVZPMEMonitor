@@ -51,7 +51,7 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
   };
 
   const handleSubmitPlan = async (subprojectId: string) => {
-    if (!confirm('Submeter plano para análise da ADVZ?')) return;
+    if (!confirm('Submeter plano para anÃ¡lise da ADVZ?')) return;
     await submitActivityPlan(subprojectId);
     window.location.reload();
   };
@@ -82,8 +82,8 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
                 <p style={{ margin: 0, fontWeight: 700, color: '#0f172a', fontSize: '1rem' }}>{p.name}</p>
                 <span className={`badge ${p.status === 'EM_CURSO' ? 'badge-success' : 'badge-warning'}`}>{p.status.replace('_', ' ')}</span>
               </div>
-              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: '#64748b' }}>Acordo {p.agreementNumber} · {p.location}</p>
-              <p style={{ margin: '0.75rem 0 0 0', fontSize: '0.8rem', color: '#1d4ed8', fontWeight: 600 }}>Ver detalhes e actividades →</p>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: '#64748b' }}>Acordo {p.agreementNumber} Â· {p.location}</p>
+              <p style={{ margin: '0.75rem 0 0 0', fontSize: '0.8rem', color: '#1d4ed8', fontWeight: 600 }}>Ver detalhes e actividades â†’</p>
             </div>
           ))}
         </div>
@@ -102,7 +102,7 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{selected.name}</h3>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#64748b', fontSize: '0.85rem' }}>Acordo {selected.agreementNumber} · {selected.location}</p>
+                <p style={{ margin: '0.25rem 0 0 0', color: '#64748b', fontSize: '0.85rem' }}>Acordo {selected.agreementNumber} Â· {selected.location}</p>
               </div>
               <button className="btn btn-secondary" onClick={() => setSelected(null)}>Fechar</button>
             </div>
@@ -119,8 +119,8 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
                 </button>
               ))}
               <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#64748b' }}>
-                Estado: <strong>{selected.planStatus === 'DRAFT' ? 'Rascunho' : selected.planStatus === 'PENDING' ? 'Submetido (em análise)' : selected.planStatus === 'APPROVED' ? 'Aprovado' : 'Devolvido'}</strong>
-                {selected.planSubmittedAt ? ` · submetido em ${formatDate(selected.planSubmittedAt)}` : ''}
+                Estado: <strong>{selected.planStatus === 'DRAFT' ? 'Rascunho' : selected.planStatus === 'PENDING' ? 'Submetido (em anÃ¡lise)' : selected.planStatus === 'APPROVED' ? 'Aprovado' : 'Devolvido'}</strong>
+                {selected.planSubmittedAt ? ` Â· submetido em ${formatDate(selected.planSubmittedAt)}` : ''}
               </span>
             </div>
 
@@ -142,10 +142,10 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
                     <thead>
                       <tr style={{ borderBottom: '1px solid var(--border)', textAlign: 'left' }}>
                         <th style={{ padding: '0.5rem 0' }}>Actividade</th>
-                        <th>Responsável</th>
-                        <th>Início</th>
+                        <th>ResponsÃ¡vel</th>
+                        <th>InÃ­cio</th>
                         <th>Fim</th>
-                        <th>Orçamento</th>
+                        <th>OrÃ§amento</th>
                         <th>Indicador</th>
                         {canEdit && <th></th>}
                       </tr>
@@ -178,11 +178,11 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
 
                 {canEdit && (
                   <form onSubmit={e => handleAddActivity(e, selected.id)} style={{ display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', marginBottom: '1rem', padding: '1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                    <input className="form-input" placeholder="Descrição da actividade *" value={newActivity.description} onChange={e => setNewActivity({ ...newActivity, description: e.target.value })} required />
-                    <input className="form-input" placeholder="Responsável" value={newActivity.responsible} onChange={e => setNewActivity({ ...newActivity, responsible: e.target.value })} />
-                    <input className="form-input" type="date" placeholder="Início" value={newActivity.startDate} onChange={e => setNewActivity({ ...newActivity, startDate: e.target.value })} />
+                    <input className="form-input" placeholder="DescriÃ§Ã£o da actividade *" value={newActivity.description} onChange={e => setNewActivity({ ...newActivity, description: e.target.value })} required />
+                    <input className="form-input" placeholder="ResponsÃ¡vel" value={newActivity.responsible} onChange={e => setNewActivity({ ...newActivity, responsible: e.target.value })} />
+                    <input className="form-input" type="date" placeholder="InÃ­cio" value={newActivity.startDate} onChange={e => setNewActivity({ ...newActivity, startDate: e.target.value })} />
                     <input className="form-input" type="date" placeholder="Fim" value={newActivity.endDate} onChange={e => setNewActivity({ ...newActivity, endDate: e.target.value })} />
-                    <input className="form-input" type="number" step="0.01" placeholder="Orçamento (MT)" value={newActivity.budget} onChange={e => setNewActivity({ ...newActivity, budget: e.target.value })} />
+                    <input className="form-input" type="number" step="0.01" placeholder="OrÃ§amento (MT)" value={newActivity.budget} onChange={e => setNewActivity({ ...newActivity, budget: e.target.value })} />
                     <input className="form-input" placeholder="Indicador" value={newActivity.indicator} onChange={e => setNewActivity({ ...newActivity, indicator: e.target.value })} />
                     <button type="submit" className="btn btn-secondary" disabled={isLoading} style={{ padding: '0.4rem 0.9rem', fontSize: '0.85rem' }}>
                       {isLoading ? 'A adicionar...' : '+ Adicionar actividade'}
@@ -223,7 +223,7 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
                     </tbody>
                   </table>
                 ) : (
-                  <p className="text-secondary">Sem rubricas orçamentais.</p>
+                  <p className="text-secondary">Sem rubricas orÃ§amentais.</p>
                 )}
               </div>
             )}
@@ -263,7 +263,7 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid var(--border)', textAlign: 'left' }}>
-                        <th style={{ padding: '0.5rem 0' }}>Período</th>
+                        <th style={{ padding: '0.5rem 0' }}>PerÃ­odo</th>
                         <th>Estado</th>
                         <th>Submetido</th>
                         <th>Fundos</th>
@@ -281,7 +281,7 @@ export default function PmeProjectList({ projects }: { projects: Project[] }) {
                     </tbody>
                   </table>
                 ) : (
-                  <p className="text-secondary">Sem relatórios.</p>
+                  <p className="text-secondary">Sem relatÃ³rios.</p>
                 )}
               </div>
             )}

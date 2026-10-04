@@ -110,29 +110,29 @@ export default async function PmeDashboard() {
       >
         <div>
           <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, color: '#0f172a' }}>
-            Olá, {user.pme.name}
+            OlÃ¡, {user.pme.name}
           </h1>
           <p style={{ margin: '0.35rem 0 0 0', color: '#64748b', fontSize: '0.95rem' }}>
-            Acompanhe a execução dos seus projectos e submeta os relatórios trimestrais.
+            Acompanhe a execuÃ§Ã£o dos seus projectos e submeta os relatÃ³rios trimestrais.
           </p>
         </div>
         <Link href="/pme/relatorios/novo" className="btn btn-primary" id="pme-submit-report">
-          Submeter relatório trimestral
+          Submeter relatÃ³rio trimestral
         </Link>
       </div>
 
       {subprojects.length === 0 ? (
         <Panel>
           <EmptyState
-            title="Ainda não tem projectos atribuídos"
-            description="Assim que a Agência de Desenvolvimento do Vale do Zambeze registrar um projecto financiado para a sua empresa, ele aparecerá aqui com o orçamento, os prazos e o formulário de reporte trimestral."
+            title="Ainda nÃ£o tem projectos atribuÃ­dos"
+            description="Assim que a AgÃªncia de Desenvolvimento do Vale do Zambeze registrar um projecto financiado para a sua empresa, ele aparecerÃ¡ aqui com o orÃ§amento, os prazos e o formulÃ¡rio de reporte trimestral."
           />
         </Panel>
       ) : (
         <>
           <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '10px' }}>
-            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 700, color: '#075985' }}>📋 Plano de Actividades</p>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#0369a1' }}>Clique no projecto abaixo ? separador <strong>Actividades</strong> ? preencha o formul�rio ? <strong>Guardar rascunho</strong> ou <strong>Submeter plano</strong></p>
+            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 700, color: '#075985' }}>ðŸ“‹ Plano de Actividades</p>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#0369a1' }}>Clique no projecto abaixo ? separador <strong>Actividades</strong> ? preencha o formulário ? <strong>Guardar rascunho</strong> ou <strong>Submeter plano</strong></p>
           </div>
           <PmeProjectList projects={subprojects} />
           {missingThisQuarter.length > 0 && (
@@ -140,13 +140,13 @@ export default async function PmeDashboard() {
               tone={isPastDeadline(deadline, now) ? 'danger' : 'warning'}
               title={
                 isPastDeadline(deadline, now)
-                  ? `Prazo de submissão de ${todayPeriod} expirou há ${Math.abs(overdueBy)} dia(s)`
-                  : `Faltam ${overdueBy} dia(s) para submeter o relatório de ${todayPeriod}`
+                  ? `Prazo de submissÃ£o de ${todayPeriod} expirou hÃ¡ ${Math.abs(overdueBy)} dia(s)`
+                  : `Faltam ${overdueBy} dia(s) para submeter o relatÃ³rio de ${todayPeriod}`
               }
             >
               {missingThisQuarter.length === 1
-                ? `O projecto "${missingThisQuarter[0].name}" ainda não tem relatório submetido para o trimestre actual.`
-                : `${missingThisQuarter.length} projectos ainda não têm relatório submetido para o trimestre actual.`}{' '}
+                ? `O projecto "${missingThisQuarter[0].name}" ainda nÃ£o tem relatÃ³rio submetido para o trimestre actual.`
+                : `${missingThisQuarter.length} projectos ainda nÃ£o tÃªm relatÃ³rio submetido para o trimestre actual.`}{' '}
               <Link href="/pme/relatorios/novo" style={{ fontWeight: 700, textDecoration: 'underline' }}>
                 Submeter agora
               </Link>
@@ -155,11 +155,11 @@ export default async function PmeDashboard() {
           )}
 
           {totals.pending > 0 && (
-            <Notice tone="info" title={`${totals.pending} relatório(s) por concluir`}>
-              Tem relatórios em rascunho ou devolvidos pela Agência que ainda precisam de ser corrigidos e
+            <Notice tone="info" title={`${totals.pending} relatÃ³rio(s) por concluir`}>
+              Tem relatÃ³rios em rascunho ou devolvidos pela AgÃªncia que ainda precisam de ser corrigidos e
               submetidos.{' '}
               <Link href="/pme/relatorios" style={{ fontWeight: 700, textDecoration: 'underline' }}>
-                Ver relatórios
+                Ver relatÃ³rios
               </Link>
               .
             </Notice>
@@ -173,26 +173,26 @@ export default async function PmeDashboard() {
               marginBottom: '2rem',
             }}
           >
-            <StatCard label="Orçamento Aprovado" value={formatMZN(totals.budget)} unit="MZN" accent="#0f172a" />
+            <StatCard label="OrÃ§amento Aprovado" value={formatMZN(totals.budget)} unit="MZN" accent="#0f172a" />
             <StatCard
               label="Executado (submetido)"
               value={formatMZN(totals.spent)}
               unit="MZN"
               accent="#1d4ed8"
-              hint={`${percentage(totals.spent, totals.budget).toFixed(1)}% do orçamento total`}
+              hint={`${percentage(totals.spent, totals.budget).toFixed(1)}% do orÃ§amento total`}
             />
             <StatCard
-              label="Saldo Disponível"
+              label="Saldo DisponÃ­vel"
               value={formatMZN(Math.max(0, totals.budget - totals.spent))}
               unit="MZN"
               accent="#166534"
-              hint="Após expenses submetidos à Agência"
+              hint="ApÃ³s expenses submetidos Ã  AgÃªncia"
             />
             <StatCard
-              label="Prazo de Submissão"
+              label="Prazo de SubmissÃ£o"
               value={isPastDeadline(deadline, now) ? 'Expirado' : `${overdueBy} dias`}
               accent={isPastDeadline(deadline, now) ? '#b91c1c' : '#166534'}
-              hint={`${todayPeriod} · até ${formatDate(deadline)}`}
+              hint={`${todayPeriod} Â· atÃ© ${formatDate(deadline)}`}
             />
           </div>
 
@@ -224,7 +224,7 @@ export default async function PmeDashboard() {
               <Panel
                 key={subproject.id}
                 title={subproject.name}
-                description={`Acordo ${subproject.agreementNumber} · ${subproject.location}`}
+                description={`Acordo ${subproject.agreementNumber} Â· ${subproject.location}`}
                 action={<ProjectStatusBadge status={subproject.status} />}
               >
                 <div
@@ -244,7 +244,7 @@ export default async function PmeDashboard() {
                         marginBottom: '0.4rem',
                       }}
                     >
-                      <span style={{ fontWeight: 600 }}>Execução financeira</span>
+                      <span style={{ fontWeight: 600 }}>ExecuÃ§Ã£o financeira</span>
                       <span style={{ fontVariantNumeric: 'tabular-nums' }}>
                         {formatMZN(projectSpent)} / {formatMZN(subproject.totalBudget)} MZN
                       </span>
@@ -265,14 +265,14 @@ export default async function PmeDashboard() {
                         marginBottom: '0.4rem',
                       }}
                     >
-                      <span style={{ fontWeight: 600 }}>Tempo de execução</span>
+                      <span style={{ fontWeight: 600 }}>Tempo de execuÃ§Ã£o</span>
                       <span style={{ fontVariantNumeric: 'tabular-nums' }}>
-                        {formatDate(subproject.startDate)} → {formatDate(subproject.endDate)}
+                        {formatDate(subproject.startDate)} â†’ {formatDate(subproject.endDate)}
                       </span>
                     </div>
                     <ProgressBar value={elapsedMonths} total={totalMonths} color="#22a039" />
                     <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.8rem', color: '#64748b' }}>
-                      {elapsedMonths} de {totalMonths} meses · {timePct.toFixed(0)}% do prazo
+                      {elapsedMonths} de {totalMonths} meses Â· {timePct.toFixed(0)}% do prazo
                     </p>
                   </div>
                 </div>
@@ -289,8 +289,8 @@ export default async function PmeDashboard() {
                       color: '#075985',
                     }}
                   >
-                    Próximo desembolso: <strong>{formatMZN(nextDisbursement.amount)} MZN</strong> ·{' '}
-                    {nextDisbursement.phase} · previsto para {formatDate(nextDisbursement.scheduledDate)}
+                    PrÃ³ximo desembolso: <strong>{formatMZN(nextDisbursement.amount)} MZN</strong> Â·{' '}
+                    {nextDisbursement.phase} Â· previsto para {formatDate(nextDisbursement.scheduledDate)}
                   </p>
                 )}
 
@@ -305,7 +305,7 @@ export default async function PmeDashboard() {
                         color: '#166534',
                       }}
                     >
-                      Ver execução por rubrica orçamental
+                      Ver execuÃ§Ã£o por rubrica orÃ§amental
                     </summary>
                     <div style={{ marginTop: '1rem' }}>
                       <DataTable
@@ -353,24 +353,24 @@ export default async function PmeDashboard() {
           })}
 
           <Panel
-            title="Submissões recentes"
-            description="Últimos relatórios enviados à Agência."
+            title="SubmissÃµes recentes"
+            description="Ãšltimos relatÃ³rios enviados Ã  AgÃªncia."
             padded={false}
           >
             <div style={{ padding: '1.75rem' }}>
               {recentReports.length === 0 ? (
                 <EmptyState
-                  title="Ainda não submeteu relatórios"
-                  description="Comece por preencher o relatório trimestral com a actividade realizada, o progresso físico e as despesas do trimestre."
+                  title="Ainda nÃ£o submeteu relatÃ³rios"
+                  description="Comece por preencher o relatÃ³rio trimestral com a actividade realizada, o progresso fÃ­sico e as despesas do trimestre."
                   action={
                     <Link href="/pme/relatorios/novo" className="btn btn-primary">
-                      Submeter primeiro relatório
+                      Submeter primeiro relatÃ³rio
                     </Link>
                   }
                 />
               ) : (
                 <DataTable
-                  head={['Projecto', 'Período', 'Estado', 'Submetido em', 'Despesas', '']}
+                  head={['Projecto', 'PerÃ­odo', 'Estado', 'Submetido em', 'Despesas', '']}
                 >
                   {recentReports.map((report) => (
                     <tr key={report.id}>
@@ -392,7 +392,7 @@ export default async function PmeDashboard() {
                           href={`/pme/relatorios/${report.id}`}
                           style={{ color: '#166534', fontWeight: 700, fontSize: '0.85rem' }}
                         >
-                          Ver →
+                          Ver â†’
                         </Link>
                       </td>
                     </tr>
