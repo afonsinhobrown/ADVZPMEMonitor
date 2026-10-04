@@ -2,22 +2,35 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Pegamos o cookie de sessão simulado
-  const session = request.cookies.get('advz_session');
+  const { pathname } = request.nextUrl;
+  
+  // Allow access to login pages
+  if (pathname === '/login' || pathname === '/pme/login' || pathname === '/') {
+    return NextResponse.next();
+  }
 
-  // Se o utilizador NÃO tiver sessão e tentar acessar uma rota protegida
-  if (!session) {
+  // PME Portal rules
+  if (pathname.startsWith('/pme')) {
+    const pmeSession = request.cookies.get('pme_session');
+    if (!pmeSession) {
+      return NextResponse.redirect(new URL('/pme/login', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Agency (Técnicos) rules
+  const advzSession = request.cookies.get('advz_session');
+  if (!advzSession) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Se tiver sessão, deixa passar
   return NextResponse.next();
 }
 
-// Configuração das rotas que o middleware vai intercetar
 export const config = {
   matcher: [
     '/dashboard/:path*',
+    '/pmes/:path*',
     '/pme/:path*',
     '/subprojectos/:path*',
     '/relatorios/:path*',
