@@ -22,6 +22,9 @@ export default function Sidebar() {
             <Link href="/relatorios-tecnicos" className="text-secondary hover:text-primary">Relatórios do Técnico</Link>
           </li>
           <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
+            <Link href="/comparacao-relatorios" className="font-semibold text-secondary hover:text-primary" style={{ color: 'var(--warning)' }}>Comparação (Admin)</Link>
+          </li>
+          <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
             <Link href="/estatisticas" className="text-secondary hover:text-primary">Estatísticas</Link>
           </li>
           <li style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', borderLeft: '3px solid transparent' }}>
