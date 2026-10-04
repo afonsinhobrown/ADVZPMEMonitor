@@ -1,9 +1,28 @@
 'use client';
 
 import React, { useState } from 'react';
+import { createPME } from '@/app/actions';
 
 export default function CadastrosPME() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const result = await createPME(formData);
+    
+    setIsLoading(false);
+    
+    if (result.success) {
+      alert("PME registada com sucesso!");
+      setIsModalOpen(false);
+    } else {
+      alert("Erro ao criar PME: " + result.error);
+    }
+  };
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -60,20 +79,20 @@ export default function CadastrosPME() {
           <div className="card" style={{ width: '100%', maxWidth: '500px', padding: '2rem', background: 'white', borderRadius: '12px', animation: 'fadeIn 0.2s ease-in-out' }}>
             <h3 className="text-xl font-bold mb-4">Cadastrar Nova PME</h3>
             
-            <form className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("PME registada com sucesso!"); }}>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div>
                 <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Nome da Empresa</label>
-                <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Insira o nome" required />
+                <input type="text" name="name" className="form-input" style={{ width: '100%' }} placeholder="Insira o nome" required />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>NIF</label>
-                  <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Número de Identificação" required />
+                  <input type="text" name="nif" className="form-input" style={{ width: '100%' }} placeholder="Número de Identificação" required />
                 </div>
                 <div>
                   <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Sector</label>
-                  <select className="form-input" style={{ width: '100%' }}>
+                  <select name="sector" className="form-input" style={{ width: '100%' }}>
                     <option>Agricultura</option>
                     <option>Pescas</option>
                     <option>Tecnologia</option>
@@ -84,12 +103,14 @@ export default function CadastrosPME() {
 
               <div>
                 <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Contacto Telefónico</label>
-                <input type="text" className="form-input" style={{ width: '100%' }} placeholder="+258 ..." />
+                <input type="text" name="contact" className="form-input" style={{ width: '100%' }} placeholder="+258 ..." />
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
                 <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" style={{ background: '#22a039', color: 'white', border: 'none' }}>Guardar</button>
+                <button type="submit" className="btn btn-primary" style={{ background: '#22a039', color: 'white', border: 'none' }} disabled={isLoading}>
+                  {isLoading ? 'A Guardar...' : 'Guardar'}
+                </button>
               </div>
             </form>
           </div>

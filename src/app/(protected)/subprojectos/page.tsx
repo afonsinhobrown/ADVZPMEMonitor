@@ -1,9 +1,28 @@
 'use client';
 
 import React, { useState } from 'react';
+import { createSubproject } from '@/app/actions';
 
 export default function Subprojectos() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const result = await createSubproject(formData);
+    
+    setIsLoading(false);
+    
+    if (result.success) {
+      alert("Subprojecto criado com sucesso!");
+      setIsModalOpen(false);
+    } else {
+      alert("Erro ao criar Subprojecto: " + result.error);
+    }
+  };
 
   return (
     <div className="grid gap-4">
@@ -67,53 +86,50 @@ export default function Subprojectos() {
           <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '2rem', background: 'white', borderRadius: '12px', animation: 'fadeIn 0.2s ease-in-out' }}>
             <h3 className="text-xl font-bold mb-4">Cadastrar Novo Subprojecto</h3>
             
-            <form className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("Subprojecto adicionado com sucesso!"); }}>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div>
                 <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Nome do Projecto</label>
-                <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Insira o nome do projecto" required />
+                <input type="text" name="name" className="form-input" style={{ width: '100%' }} placeholder="Insira o nome do projecto" required />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Nº de Acordo</label>
-                  <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Ex: AS-004/2026" required />
+                  <input type="text" name="agreementNumber" className="form-input" style={{ width: '100%' }} placeholder="Ex: AS-004/2026" required />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>PME / Beneficiário</label>
-                  <select className="form-input" style={{ width: '100%' }} required>
-                    <option value="">Seleccione a PME...</option>
-                    <option value="1">AgroZambeze Lda</option>
-                    <option value="2">Furo Água MZ</option>
-                    <option value="3">Caju do Vale</option>
-                  </select>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>PME / Beneficiário (ID)</label>
+                  <input type="text" name="pmeId" className="form-input" style={{ width: '100%' }} placeholder="ID da PME no banco de dados" required />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Orçamento Total (MZN)</label>
-                  <input type="number" className="form-input" style={{ width: '100%' }} placeholder="0.00" required />
+                  <input type="number" name="totalBudget" className="form-input" style={{ width: '100%' }} placeholder="0.00" required />
                 </div>
                 <div>
                   <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Localização</label>
-                  <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Província/Distrito" required />
+                  <input type="text" name="location" className="form-input" style={{ width: '100%' }} placeholder="Província/Distrito" required />
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Data de Início</label>
-                  <input type="date" className="form-input" style={{ width: '100%' }} required />
+                  <input type="date" name="startDate" className="form-input" style={{ width: '100%' }} required />
                 </div>
                 <div>
                   <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Data de Término</label>
-                  <input type="date" className="form-input" style={{ width: '100%' }} required />
+                  <input type="date" name="endDate" className="form-input" style={{ width: '100%' }} required />
                 </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
                 <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" style={{ background: '#22a039', color: 'white', border: 'none' }}>Guardar Subprojecto</button>
+                <button type="submit" className="btn btn-primary" style={{ background: '#22a039', color: 'white', border: 'none' }} disabled={isLoading}>
+                  {isLoading ? 'A Guardar...' : 'Guardar Subprojecto'}
+                </button>
               </div>
             </form>
           </div>
