@@ -1,9 +1,15 @@
+'use client';
+
+import React, { useState } from 'react';
+
 export default function Subprojectos() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="grid gap-4">
       <div className="flex justify-between items-center" style={{ marginBottom: '1rem' }}>
         <h2 className="text-xl font-bold">Subprojectos</h2>
-        <button className="btn btn-primary">+ Novo Subprojecto</button>
+        <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>+ Novo Subprojecto</button>
       </div>
 
       <div className="card">
@@ -51,6 +57,74 @@ export default function Subprojectos() {
           </tbody>
         </table>
       </div>
+
+      {isModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+        }}>
+          <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '2rem', background: 'white', borderRadius: '12px', animation: 'fadeIn 0.2s ease-in-out' }}>
+            <h3 className="text-xl font-bold mb-4">Cadastrar Novo Subprojecto</h3>
+            
+            <form className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("Subprojecto adicionado com sucesso!"); }}>
+              <div>
+                <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Nome do Projecto</label>
+                <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Insira o nome do projecto" required />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Nº de Acordo</label>
+                  <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Ex: AS-004/2026" required />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>PME / Beneficiário</label>
+                  <select className="form-input" style={{ width: '100%' }} required>
+                    <option value="">Seleccione a PME...</option>
+                    <option value="1">AgroZambeze Lda</option>
+                    <option value="2">Furo Água MZ</option>
+                    <option value="3">Caju do Vale</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Orçamento Total (MZN)</label>
+                  <input type="number" className="form-input" style={{ width: '100%' }} placeholder="0.00" required />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Localização</label>
+                  <input type="text" className="form-input" style={{ width: '100%' }} placeholder="Província/Distrito" required />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Data de Início</label>
+                  <input type="date" className="form-input" style={{ width: '100%' }} required />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold mb-1" style={{ display: 'block' }}>Data de Término</label>
+                  <input type="date" className="form-input" style={{ width: '100%' }} required />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary" style={{ background: '#22a039', color: 'white', border: 'none' }}>Guardar Subprojecto</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
     </div>
   );
 }
