@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
   }
 
   // PME Portal rules
-  if (pathname.startsWith('/pme')) {
+  if (pathname === '/pme' || pathname.startsWith('/pme/')) {
     const pmeSession = request.cookies.get('pme_session');
     if (!pmeSession) {
       return NextResponse.redirect(new URL('/pme/login', request.url));
