@@ -113,3 +113,34 @@ export async function createTechnicalReport(formData: FormData) {
     return { success: false, error: error.message };
   }
 }
+
+// Criar Visita de Campo
+export async function createFieldVisit(formData: FormData) {
+  const subprojectId = formData.get('subprojectId') as string;
+  const scheduledDate = new Date(formData.get('scheduledDate') as string);
+  const findings = formData.get('findings') as string;
+
+  try {
+    const inspector = await prisma.user.findFirst({
+      where: { role: 'TECNICO' }
+    }) || await prisma.user.findFirst();
+    
+    if (!inspector) return { success: false, error: 'Inspector não encontrado' };
+
+    const newVisit = await prisma.fieldVisit.create({
+      data: {
+        subprojectId,
+        scheduledDate,
+        findings,
+        inspectorId: inspector.id,
+        status: 'PLANNED',
+      }
+    });
+
+    revalidatePath('/visitas');
+    return { success: true, data: newVisit };
+  } catch (error: any) {
+    console.error("Erro ao agendar Visita de Campo:", error);
+    return { success: false, error: error.message };
+  }
+}
