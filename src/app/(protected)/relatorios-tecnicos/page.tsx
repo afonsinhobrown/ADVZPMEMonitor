@@ -11,8 +11,8 @@ export default function RelatoriosTecnicos() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <select className="form-input" style={{ width: '250px' }}>
             <option value="">Todos os Projectos</option>
-            <option value="1">Subprojecto Agrícola Malanje</option>
-            <option value="2">Sistema de Irrigação Benguela</option>
+            <option value="1">Subprojecto Agrícola Zambézia</option>
+            <option value="2">Sistema de Irrigação Tete</option>
           </select>
           <button className="btn btn-primary">+ Novo Relatório</button>
         </div>
@@ -29,7 +29,7 @@ export default function RelatoriosTecnicos() {
           </thead>
           <tbody>
             <tr style={{ borderBottom: '1px solid var(--border)' }}>
-              <td style={{ padding: '1rem' }}>Subprojecto Agrícola Malanje</td>
+              <td style={{ padding: '1rem' }}>Subprojecto Agrícola Zambézia</td>
               <td style={{ padding: '1rem' }}>Q1 2026</td>
               <td style={{ padding: '1rem' }}>10 Mar 2026</td>
               <td style={{ padding: '1rem' }}><span className="badge badge-success">APROVADO</span></td>
@@ -38,7 +38,7 @@ export default function RelatoriosTecnicos() {
               </td>
             </tr>
             <tr style={{ borderBottom: '1px solid var(--border)' }}>
-              <td style={{ padding: '1rem' }}>Sistema de Irrigação Benguela</td>
+              <td style={{ padding: '1rem' }}>Sistema de Irrigação Tete</td>
               <td style={{ padding: '1rem' }}>Q1 2026</td>
               <td style={{ padding: '1rem' }}>-</td>
               <td style={{ padding: '1rem' }}><span className="badge badge-warning">RASCUNHO</span></td>

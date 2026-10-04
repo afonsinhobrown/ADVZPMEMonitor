@@ -9,7 +9,7 @@ export default function ComparacaoRelatoriosAdmin() {
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
         <select className="form-input" style={{ width: '300px' }}>
           <option>Seleccione o Projecto...</option>
-          <option>Sistema de Irrigação Benguela (Agro Lda)</option>
+          <option>Sistema de Irrigação Tete (Agro Lda)</option>
         </select>
         <select className="form-input" style={{ width: '200px' }}>
           <option>Q1 2026</option>

@@ -14,7 +14,7 @@ export default function LandingPage() {
         <nav className="flex gap-4 items-center">
           <Link href="#" className="text-sm font-semibold text-secondary hover:text-primary">Início</Link>
           <Link href="#" className="text-sm font-semibold text-secondary hover:text-primary">Sobre a Agência</Link>
-          <Link href="/portal-pme" className="text-sm font-semibold text-secondary hover:text-primary" style={{ color: '#22a039' }}>Portal da PME</Link>
+          <Link href="/pme" className="text-sm font-semibold text-secondary hover:text-primary" style={{ color: '#22a039' }}>Portal da PME</Link>
           <Link href="/login" className="btn" style={{ background: '#22a039', color: 'white', padding: '0.5rem 1.5rem', borderRadius: '50px' }}>
             Acesso ao Sistema
           </Link>
@@ -46,7 +46,7 @@ export default function LandingPage() {
             <Link href="/login" className="btn" style={{ background: '#22a039', color: 'white', padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: 'none', boxShadow: '0 4px 14px rgba(34, 160, 57, 0.4)' }}>
               Entrar no Sistema
             </Link>
-            <Link href="/portal-pme" className="btn" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', color: 'white', padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.3)' }}>
+            <Link href="/pme" className="btn" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', color: 'white', padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.3)' }}>
               Acessar Portal da PME
             </Link>
           </div>
