@@ -354,3 +354,34 @@ export async function removeReportEvidence(formData: FormData): Promise<void> {
   revalidatePath(`/pme/relatorios/${report.id}`);
   redirect(`/pme/relatorios/${report.id}`);
 }
+export async function uploadActivityPlan(formData: FormData): Promise<void> {
+  const user = await getPmeUser();
+  if (!user?.pme) redirect('/pme/login');
+
+  const subprojectId = readText(formData, 'subprojectId');
+  const file = formData.get('plan');
+
+  if (!(file instanceof File) || file.size === 0 || !isAllowedEvidence(file)) {
+    redirect('/pme?aviso=plano-invalido');
+  }
+
+  const subproject = await prisma.subproject.findFirst({
+    where: { id: subprojectId, pmeId: user.pme.id },
+  });
+  if (!subproject) redirect('/pme');
+
+  if (subproject.planFileUrl) {
+    await removeEvidence(subproject.planFileUrl);
+  }
+
+  const stored = await storeEvidence(file);
+
+  await prisma.subproject.update({
+    where: { id: subproject.id },
+    data: { planFileName: file.name, planFileUrl: stored.fileUrl, planSubmittedAt: new Date() },
+  });
+
+  revalidatePath('/pme');
+  revalidatePath('/subprojectos');
+  redirect('/pme?aviso=plano-submetido');
+}

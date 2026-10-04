@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { getPmeUser } from '@/lib/auth';
+import { uploadActivityPlan } from '@/app/pme/actions';
 import {
   currentQuarter,
   daysUntil,
@@ -286,12 +287,42 @@ export default async function PmeDashboard() {
                   </p>
                 )}
 
+                <div
+                  style={{
+                    marginTop: '1.5rem',
+                    padding: '1rem 1.25rem',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '10px',
+                    background: '#f8fafc',
+                  }}
+                >
+                  <p style={{ margin: '0 0 0.5rem 0', fontWeight: 700, color: '#0f172a' }}>Plano de Actividades</p>
+                  {subproject.planFileUrl ? (
+                    <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#475569' }}>
+                      Submetido: <a href={subproject.planFileUrl} target="_blank" rel="noreferrer" style={{ color: '#166534', fontWeight: 600 }}>{subproject.planFileName || 'Ver plano'}</a>
+                      {subproject.planSubmittedAt ? ` em ${formatDate(subproject.planSubmittedAt)}` : ''}
+                    </p>
+                  ) : (
+                    <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#b45309' }}>
+                      Ainda não submeteu o plano de actividades deste projecto.
+                    </p>
+                  )}
+                  <form action={uploadActivityPlan} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <input type="hidden" name="subprojectId" value={subproject.id} />
+                    <input type="file" name="plan" accept=".pdf,.xls,.xlsx,.docx" required style={{ fontSize: '0.85rem' }} />
+                    <button type="submit" className="btn btn-secondary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.85rem' }}>
+                      {subproject.planFileUrl ? 'Substituir plano' : 'Submeter plano'}
+                    </button>
+                  </form>
+                </div>
+
                 {subproject.budgetCategories.length > 0 && (
                   <details style={{ marginTop: '1.5rem' }}>
                     <summary
                       style={{
                         cursor: 'pointer',
                         fontWeight: 700,
+
                         fontSize: '0.9rem',
                         color: '#166534',
                       }}

@@ -55,7 +55,43 @@ export async function GET(
   });
 
   if (!attachment || !attachment.report) {
-    return Response.json({ error: 'Ficheiro não encontrado.' }, { status: 404 });
+    // Fallback: o ficheiro pode ser o plano de actividades de um subprojecto
+    const planProject = await prisma.subproject.findFirst({
+      where: { planFileUrl: fileUrl },
+      select: { beneficiaryId: true, pme: { select: { userId: true } } },
+    });
+
+    if (!planProject) {
+      return Response.json({ error: 'Ficheiro não encontrado.' }, { status: 404 });
+    }
+
+    const isPlanOwner =
+      planProject.pme?.userId === sessionUserId || planProject.beneficiaryId === sessionUserId;
+
+    if (!isPlanOwner) {
+      const user = await prisma.user.findUnique({
+        where: { id: sessionUserId },
+        select: { role: true },
+      });
+      if (!user || user.role === 'BENEFICIARIO') {
+        return Response.json({ error: 'Sem permissão para aceder a este ficheiro.' }, { status: 403 });
+      }
+    }
+
+    const planBuffer = await readEvidence(storageKey);
+    if (!planBuffer) {
+      return Response.json({ error: 'Ficheiro indisponA-vel no armazenamento.' }, { status: 404 });
+    }
+
+    const planExtension = storageKey.slice(storageKey.lastIndexOf('.')).toLowerCase();
+    return new Response(new Uint8Array(planBuffer), {
+      headers: {
+        'Content-Type': CONTENT_TYPES[planExtension] ?? 'application/octet-stream',
+        'Content-Length': String(planBuffer.byteLength),
+        'Content-Disposition': 'inline; filename="plano-actividades' + planExtension + '"',
+        'Cache-Control': 'private, no-store',
+      },
+    });
   }
 
   const report = attachment.report;

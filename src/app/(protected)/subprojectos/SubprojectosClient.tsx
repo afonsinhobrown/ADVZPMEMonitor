@@ -218,6 +218,22 @@ export default function SubprojectosClient({
             </div>
 
             <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
+              <p className="font-bold" style={{ marginBottom: '0.5rem' }}>Plano de Actividades</p>
+              {selectedProject.planFileUrl ? (
+                <p>
+                  <a href={selectedProject.planFileUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
+                    {selectedProject.planFileName || 'Descarregar plano'}
+                  </a>
+                  {selectedProject.planSubmittedAt && (
+                    <span className="text-secondary text-sm"> — submetido em {new Date(selectedProject.planSubmittedAt).toLocaleDateString('pt-MZ')}</span>
+                  )}
+                </p>
+              ) : (
+                <p className="text-secondary">A PME ainda não submeteu o plano de actividades.</p>
+              )}
+            </div>
+
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
               <div className="flex justify-between items-center mb-4">
                 <p className="font-bold">Progresso Financeiro</p>
                 <p className="font-bold text-lg" style={{ color: 'var(--accent-primary)' }}>Orçamento: {new Intl.NumberFormat('pt-MZ').format(selectedProject.totalBudget)} MZN</p>

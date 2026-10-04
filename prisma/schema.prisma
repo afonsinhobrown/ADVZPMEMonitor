@@ -55,19 +55,22 @@ model PME {
 }
 
 model Subproject {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   name            String
   description     String?
-  agreementNumber String   @unique
+  agreementNumber String    @unique
   startDate       DateTime
   endDate         DateTime
   location        String
   totalBudget     Float
   beneficiaryId   String
-  beneficiary     User     @relation("SubprojectBeneficiary", fields: [beneficiaryId], references: [id])
+  beneficiary     User      @relation("SubprojectBeneficiary", fields: [beneficiaryId], references: [id])
   pmeId           String?
-  pme             PME?     @relation(fields: [pmeId], references: [id])
-  status          String   @default("EM_CURSO") // EM_CURSO, ATRASADO, CONCLUIDO
+  pme             PME?      @relation(fields: [pmeId], references: [id])
+  status          String    @default("EM_CURSO") // EM_CURSO, ATRASADO, CONCLUIDO
+  planFileName    String?
+  planFileUrl     String?
+  planSubmittedAt DateTime?
 
   budgetCategories BudgetCategory[]
   indicators       Indicator[]
